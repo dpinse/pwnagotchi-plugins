@@ -1,9 +1,9 @@
 import subprocess
-from pwnagotchi.plugins import BasePlugin
+import pwnagotchi.plugins as plugins
 
-class WiFiAnalyzer(BasePlugin):
+class WiFiAnalyzer(plugins.Plugin):
     __author__ = 'Deus Dust'
-    __version__ = '1.0.0'
+    __version__ = '1.0.1'
     __license__ = 'MIT'
 
     def __init__(self):

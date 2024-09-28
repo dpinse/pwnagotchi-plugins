@@ -1,9 +1,9 @@
 import nmap
-from pwnagotchi.plugins import BasePlugin
+import pwnagotchi.plugins as plugins
 
-class NetworkMapper(BasePlugin):
+class NetworkMapper(plugins.Plugin):
     __author__ = 'Deus Dust'
-    __version__ = '1.0.0'
+    __version__ = '1.0.1'
     __license__ = 'MIT'
 
     def __init__(self):
@@ -11,7 +11,7 @@ class NetworkMapper(BasePlugin):
 
     def scan_network(self):
         nm = nmap.PortScanner()
-        nm.scan(hosts='192.168.1.0/24', arguments='-sn')
+        nm.scan(hosts='192.168.1.0/24', arguments='-sn') # todo allow user to change in config.toml
         return nm.all_hosts()
 
     def on_loaded(self):

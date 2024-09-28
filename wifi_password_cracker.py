@@ -1,15 +1,15 @@
 import subprocess
-from pwnagotchi.plugins import BasePlugin
+import pwnagotchi.plugins as plugins
 
-class WiFiPasswordCracker(BasePlugin):
+class WiFiPasswordCracker(plugins.Plugin):
     __author__ = 'Deus Dust'
-    __version__ = '1.0.0'
+    __version__ = '1.0.1'
     __license__ = 'MIT'
 
     def __init__(self):
         super(WiFiPasswordCracker, self).__init__()
 
-    def crack_wifi_password(self, target_bssid, wordlist_path="/path/to/wordlist.txt", interface="wlan0"):
+    def crack_wifi_password(self, target_bssid, wordlist_path="/path/to/wordlist.txt", interface="wlan0"): #todo allow user to set dictionary in config.toml
         try:
             subprocess.run(["aircrack-ng", "-b", target_bssid, "-w", wordlist_path, "-l", "cracked.txt", interface], check=True)
             self.log.info(f"WiFi password cracked for {target_bssid}")
