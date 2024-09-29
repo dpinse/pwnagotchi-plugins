@@ -3,12 +3,15 @@ import pwnagotchi.plugins as plugins
 
 class BluetoothScanner(plugins.Plugin):
     __author__ = 'Deus Dust'
-    __version__ = '1.0.1'
+    __version__ = '1.0.2'
     __license__ = 'MIT'
-
+    __defaults__ = {
+        'enabled': False,
+    }
     def __init__(self):
-        super(BluetoothScanner, self).__init__()
-
+        self.options = dict()
+        self.running = False
+        
     def scan_bluetooth_devices(self):
         try:
             output = subprocess.check_output(["hcitool", "scan"])
@@ -19,6 +22,7 @@ class BluetoothScanner(plugins.Plugin):
 
     def on_loaded(self):
         self.log.info("Bluetooth Scanner Plugin loaded")
+        self.running = True
 
     def on_periodic(self, agent):
         bluetooth_devices = self.scan_bluetooth_devices()
@@ -33,8 +37,7 @@ class BluetoothScanner(plugins.Plugin):
                     self.log.info(f"MAC: {device_mac}, Name: {device_name}")
                     agent.display_text(f"{device_name} ({device_mac})", font=fonts.Small)
 
-    def on_unload(self):
+    def on_unload(self, ui):
         self.log.info("Bluetooth Scanner Plugin unloaded")
+        self.running = False
 
-# Instantiate the plugin
-plugin = BluetoothScanner()

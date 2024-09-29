@@ -3,11 +3,14 @@ import pwnagotchi.plugins as plugins
 
 class WiFiAnalyzer(plugins.Plugin):
     __author__ = 'Deus Dust'
-    __version__ = '1.0.1'
+    __version__ = '1.0.2'
     __license__ = 'MIT'
-
+    __defaults__ = {
+        'enabled': False,
+    }
     def __init__(self):
-        super(WiFiAnalyzer, self).__init__()
+        self.options = dict()
+        self.running = False
 
     def scan_wifi_networks(self):
         try:
@@ -19,6 +22,7 @@ class WiFiAnalyzer(plugins.Plugin):
 
     def on_loaded(self):
         self.log.info("WiFi Analyzer Plugin loaded")
+        self.running = True
 
     def on_periodic(self, agent):
         wifi_networks = self.scan_wifi_networks()
@@ -31,8 +35,6 @@ class WiFiAnalyzer(plugins.Plugin):
                     self.log.info(f"SSID: {ssid}")
                     agent.display_text(ssid, font=fonts.Small)
 
-    def on_unload(self):
+    def on_unload(self, ui):
         self.log.info("WiFi Analyzer Plugin unloaded")
-
-# Instantiate the plugin
-plugin = WiFiAnalyzer()
+        self.running = False

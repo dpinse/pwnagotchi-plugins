@@ -4,11 +4,15 @@ import pwnagotchi.plugins as plugins
 
 class MACRandomizer(plugins.Plugin):
     __author__ = 'Deus Dust'
-    __version__ = '1.0.1'
+    __version__ = '1.0.2'
     __license__ = 'MIT'
+    __defaults__ = {
+        'enabled': False,
+    }
 
     def __init__(self):
-        super(MACRandomizer, self).__init__()
+        self.options = dict()
+        self.running = False
 
     def randomize_mac(self):
         new_mac = ':'.join(['{:02x}'.format(random.randint(0, 255)) for _ in range(6)])
@@ -22,10 +26,10 @@ class MACRandomizer(plugins.Plugin):
 
     def on_loaded(self):
         self.log.info("MAC Randomizer Plugin loaded")
+        self.running = True
         self.randomize_mac()
 
-    def on_unload(self):
+    def on_unload(self, ui):
         self.log.info("MAC Randomizer Plugin unloaded")
+        self.running = False
 
-# Instantiate the plugin
-plugin = MACRandomizer()

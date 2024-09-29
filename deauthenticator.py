@@ -4,11 +4,16 @@ import pwnagotchi.plugins as plugins
 
 class Deauthenticator(plugins.Plugin):
     __author__ = 'Deus Dust'
-    __version__ = '1.0.1'
+    __version__ = '1.0.2'
     __license__ = 'MIT'
+    __description__ = 'This will deauth a device after a handshake is made'
+    __defaults__ = {
+        'enabled': False,
+    }
 
     def __init__(self):
-        super(Deauthenticator, self).__init__()
+        self.options = dict()
+        self.running = False
 
     def deauth(self, target_mac, interface="wlan0", duration=5):
         try:
@@ -19,13 +24,12 @@ class Deauthenticator(plugins.Plugin):
 
     def on_loaded(self):
         self.log.info("Deauthenticator Plugin loaded")
+        self.running = True
 
     def on_handshake(self, agent, filename, access_point):
         target_mac = access_point.bssid
         self.deauth(target_mac)
 
-    def on_unload(self):
+    def on_unload(self, ui):
         self.log.info("Deauthenticator Plugin unloaded")
-
-# Instantiate the plugin
-plugin = Deauthenticator()
+        self.running = False

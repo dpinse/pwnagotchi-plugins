@@ -3,14 +3,19 @@ import pwnagotchi.plugins as plugins
 
 class DNSSpoofDetector(plugins.Plugin):
     __author__ = 'Deus Dust'
-    __version__ = '1.0.1'
+    __version__ = '1.0.2'
     __license__ = 'MIT'
+    __defaults__ = {
+        'enabled': False,
+    }
 
     def __init__(self):
-        super(DNSSpoofDetector, self).__init__()
-
+        self.options = dict()
+        self.running = False
+        
     def on_loaded(self):
         self.log.info("DNS Spoof Detector Plugin loaded")
+        self.running = True
 
     def dns_spoof_handler(self, packet):
         if packet.haslayer(scapy.DNSRR):
@@ -25,8 +30,7 @@ class DNSSpoofDetector(plugins.Plugin):
     def on_periodic(self, agent):
         self.start_sniffing()
 
-    def on_unload(self):
+    def on_unload(self, ui):
         self.log.info("DNS Spoof Detector Plugin unloaded")
+        self.running = False
 
-# Instantiate the plugin
-plugin = DNSSpoofDetector()

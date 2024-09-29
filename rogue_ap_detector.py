@@ -4,11 +4,14 @@ import pwnagotchi.plugins as plugins
 
 class RogueAPDetector(plugins.Plugin):
     __author__ = 'Deus Dust'
-    __version__ = '1.0.1'
+    __version__ = '1.0.2'
     __license__ = 'MIT'
-
+    __defaults__ = {
+        'enabled': False,
+    }
     def __init__(self):
-        super(RogueAPDetector, self).__init__()
+        self.options = dict()
+        self.running = False
 
     def scan_wifi_networks(self):
         try:
@@ -20,6 +23,7 @@ class RogueAPDetector(plugins.Plugin):
 
     def on_loaded(self):
         self.log.info("Rogue AP Detector Plugin loaded")
+        self.running = True
 
     def on_wifi_update(self, agent, access_points):
         wifi_networks = self.scan_wifi_networks()
@@ -44,8 +48,6 @@ class RogueAPDetector(plugins.Plugin):
                         rogue_aps.append({"ssid": ssid, "bssid": bssid, "channel": channel})
         return rogue_aps
 
-    def on_unload(self):
+    def on_unload(self, ui):
         self.log.info("Rogue AP Detector Plugin unloaded")
-
-# Instantiate the plugin
-plugin = RogueAPDetector()
+        self.running = False

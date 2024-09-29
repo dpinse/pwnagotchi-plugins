@@ -3,11 +3,15 @@ import pwnagotchi.plugins as plugins
 
 class WiFiJammer(plugins.Plugin):
     __author__ = 'Deus Dust'
-    __version__ = '1.0.1'
+    __version__ = '1.0.2'
     __license__ = 'MIT'
+    __defaults__ = {
+        'enabled': False,
+    }
 
     def __init__(self):
-        super(WiFiJammer, self).__init__()
+        self.options = dict()
+        self.running = False
 
     def jam_wifi(self, target_bssid, interface="wlan0"):
         try:
@@ -18,13 +22,12 @@ class WiFiJammer(plugins.Plugin):
 
     def on_loaded(self):
         self.log.info("WiFi Jammer Plugin loaded")
+        self.running = True
 
-    def on_handshake(self, agent, filename, access_point):
+    def on_handshake(self, agent, filename, access_point, client_station):
         target_bssid = access_point.bssid
         self.jam_wifi(target_bssid)
 
-    def on_unload(self):
+    def on_unload(self, ui):
         self.log.info("WiFi Jammer Plugin unloaded")
-
-# Instantiate the plugin
-plugin = WiFiJammer()
+        self.running = False
